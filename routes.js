@@ -28,6 +28,7 @@ router.get("/:ID", function(req, res){
 
 //THE TASK
 //Post request that accepts two inputs, validates them and returns addition of values
+//UPDATED: Route now only works with strings that are explicitly converted to numbers
 router.post("/addNumbers", (req, res) => {
 	let {firstNumber, secondNumber} = req.body
 
@@ -42,8 +43,8 @@ router.post("/addNumbers", (req, res) => {
 
 	//invalid input
 	if (
-			(typeof firstNumber !== "number" && typeof firstNumber !== "string") || 
-			(typeof secondNumber !== "number" && typeof secondNumber !== "string")
+			(typeof firstNumber !== "string") || 
+			(typeof secondNumber !== "string")
 	) {
 		res.json({
 			success: false,
@@ -52,19 +53,18 @@ router.post("/addNumbers", (req, res) => {
 		})
 	}
 	
-	//convert both inputs to numbers explicitly to prevent incorrect string concatenation
-	if (typeof firstNumber == "string" || typeof secondNumber == "string") {		
-		firstNumber = Number(firstNumber)
-		secondNumber = Number(secondNumber)
+	//convert both inputs to numbers explicitly 
+	//to prevent incorrect and unwanted string concatenation		
+	firstNumber = Number(firstNumber)
+	secondNumber = Number(secondNumber)
 
-		//if either number is invalid, return error
-		if (Number.isNaN(firstNumber) || Number.isNaN(secondNumber)) {
-			res.json({
-				success: false,
-				status: 422,
-				errorMsg: "Unprocessable Entity. Data passed in is not as expected."
-			})
-		}
+	//if either number is invalid, return error
+	if (Number.isNaN(firstNumber) || Number.isNaN(secondNumber)) {
+		res.json({
+			success: false,
+			status: 422,
+			errorMsg: "Unprocessable Entity. Data passed in is not as expected."
+		})
 	}
 	
 	//send correct response with result
